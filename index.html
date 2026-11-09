@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>번역버블 PC · TransBubble PC</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root{--bg:#0D0D0E;--card:#1B1B1D;--field:#2A2A2D;--fg:#F5F5F7;--sub:#A8A8AE;--acc:#FF7A1A;--onacc:#1A0F08;--me:#9DB4FF;--fs:22px}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--fg);font-family:'Pretendard Variable',Pretendard,system-ui,sans-serif;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+body.pip{padding:8px}
+#app{display:flex;flex-direction:column;height:100%;max-width:1100px;margin:0 auto;padding:14px 16px 16px;gap:10px}
+header{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+h1{margin:0;font-size:22px;font-weight:800;line-height:1.15}
+h1 small{display:block;font-size:11px;font-weight:500;color:var(--sub)}
+.sp{flex:1}
+button,select,input{font-family:inherit;font-size:13px}
+button{border:0;border-radius:12px;padding:9px 14px;background:var(--field);color:var(--fg);cursor:pointer;line-height:1.15;min-height:42px}
+button small,label small{display:block;font-size:10px;color:var(--sub);font-weight:400}
+button.pri{background:var(--acc);color:var(--onacc);font-weight:700}
+button.pri small{color:var(--onacc)}
+button.stop{background:#FF6B6B;color:#1A0B0B;font-weight:700}
+button.stop small{color:#1A0B0B}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+select,input[type=password],input[type=text]{background:var(--field);color:var(--fg);border:0;border-radius:10px;padding:10px 12px;min-height:42px}
+#bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+#status{font-size:12px;color:var(--sub);line-height:1.35}
+#keybox{background:var(--card);border-radius:16px;padding:14px 16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#keybox p{margin:0;font-size:12px;color:var(--sub);flex-basis:100%;line-height:1.5}
+#panels{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px}
+.panel{flex:1;min-height:0;background:var(--card);border-radius:18px;padding:12px 16px;display:flex;flex-direction:column;border:1px solid transparent}
+.panel.peer{border-color:#7A3B12}
+.panel.me{border-color:#3A4466}
+.ph{display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:6px}
+.peer .ph b{color:var(--acc)}
+.me .ph b{color:var(--me)}
+.ph span{color:var(--sub);font-weight:400}
+.list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
+.e .s{font-size:12px;color:var(--sub);line-height:1.4}
+.e .t{font-size:var(--fs);line-height:1.4;font-weight:500}
+.e.live .t{color:#FFC9A0}
+.me .e.live .t{color:#D3DDFF}
+.hint{color:var(--sub);font-size:13px;line-height:1.5}
+.dis{display:none}
+a{color:var(--acc)}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>번역버블 PC<small>TransBubble PC · v1</small></h1>
+    <span class="sp"></span>
+    <div id="status">준비됨<br><small>Ready</small></div>
+  </header>
+
+  <div id="mobileWarn" class="dis" style="background:#2B2214;border-radius:14px;padding:12px 14px;font-size:12px;line-height:1.5;color:#EBD9B4">이 화면은 PC 크롬에서만 탭 소리를 가져올 수 있어요. 폰 크롬에서는 마이크만 써요.<br><span style="color:#B9A685;font-size:10px">Tab audio capture works on desktop Chrome only. On phones only the mic works.</span></div>
+  <div id="keybox">
+    <label for="key" style="font-size:13px;font-weight:700">음성 인식 키 <small>Deepgram API key</small></label>
+    <input id="key" type="password" placeholder="Deepgram API key" autocomplete="off" style="flex:1;min-width:220px">
+    <button id="saveKey">저장<small>Save</small></button>
+    <p>키는 이 브라우저에만 저장돼요. 통역 중 소리는 Deepgram 서버로 전송돼요. <br>The key stays in this browser. Audio is sent to Deepgram servers while interpreting.</p>
+  </div>
+
+  <div id="bar">
+    <button id="start" class="pri">통역 시작<small>Start</small></button>
+    <button id="stop" class="stop dis">통역 끝내기<small>Stop</small></button>
+    <label style="font-size:12px">상대 언어<small>Their language</small>
+      <select id="peerLang"><option value="en">영어 English</option><option value="vi">베트남어 Tiếng Việt</option></select>
+    </label>
+    <label style="font-size:12px;display:flex;gap:6px;align-items:center"><input type="checkbox" id="useMic" checked> 내 마이크 (한국어)<small style="margin-left:4px">My mic (Korean)</small></label>
+    <button id="fMinus">A−<small>Smaller</small></button>
+    <button id="fPlus">A+<small>Bigger</small></button>
+    <button id="pipBtn">플로팅 창<small>Floating window</small></button>
+    <button id="save">기록 저장<small>Save log</small></button>
+  </div>
+
+  <div id="main" style="flex:1;min-height:0;display:flex">
+    <div id="panels" style="flex:1">
+      <section class="panel peer" aria-label="상대 Them">
+        <div class="ph"><b>▲ 상대 <span>Them · 탭 소리 Tab audio</span></b><span id="peerState">대기 Idle</span></div>
+        <div class="list" id="peerList"><div class="hint">줌·구글밋 탭을 공유하면 상대 말이 여기에 영어와 한국어로 나와요.<br>Share your Zoom / Meet tab and the other person's speech appears here with Korean below.</div></div>
+      </section>
+      <section class="panel me" aria-label="나 Me">
+        <div class="ph"><b>▼ 나 <span>Me · 마이크 Mic · 한국어</span></b><span id="meState">대기 Idle</span></div>
+        <div class="list" id="meList"><div class="hint">내가 한국어로 말하면 영어 번역이 아래에 나와요. 이어폰을 쓰면 가장 정확해요.<br>Speak Korean and the English translation appears below. Headphones work best.</div></div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const LS = {
+    get: (k, d = '') => { try { return localStorage.getItem(k) ?? d; } catch { return d; } },
+    set: (k, v) => { try { localStorage.setItem(k, v); } catch {} }
+  };
+  const setStatus = (ko, en) => { $('#status').innerHTML = ko + '<br><small>' + en + '</small>'; };
+  const esc = s => s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  const wc = s => s.trim().split(/\s+/).filter(Boolean).length;
+  const hhmm = () => new Date().toTimeString().slice(0, 5);
+
+  if (!(navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia)) $('#mobileWarn').classList.remove('dis');
+  $('#key').value = LS.get('dg_key');
+  $('#saveKey').onclick = () => { LS.set('dg_key', $('#key').value.trim()); setStatus('저장했어요', 'Saved'); };
+
+  let fs = +LS.get('fs', '22');
+  const applyFs = () => { document.documentElement.style.setProperty('--fs', fs + 'px'); LS.set('fs', fs); };
+  applyFs();
+  $('#fPlus').onclick = () => { fs = Math.min(48, fs + 3); applyFs(); };
+  $('#fMinus').onclick = () => { fs = Math.max(14, fs - 3); applyFs(); };
+
+  // ---------- 번역 ----------
+  const trs = {};
+  let engineNote = '';
+  function getTr(s, t) {
+    const k = s + '>' + t;
+    if (!(k in trs)) {
+      trs[k] = (async () => {
+        try {
+          if (!('Translator' in self)) return null;
+          const a = await Translator.availability({ sourceLanguage: s, targetLanguage: t });
+          if (a === 'unavailable') return null;
+          return await Translator.create({ sourceLanguage: s, targetLanguage: t });
+        } catch (e) { return null; }
+      })();
+    }
+    return trs[k];
+  }
+  async function myMemory(text, s, t) {
+    const r = await fetch('https://api.mymemory.translated.net/get?q=' + encodeURIComponent(text.slice(0, 480)) + '&langpair=' + s + '|' + t);
+    const j = await r.json();
+    return (j.responseData && j.responseData.translatedText) || '';
+  }
+  async function tr(text, s, t) {
+    if (!text.trim()) return '';
+    const tt = await getTr(s, t);
+    if (tt) {
+      try { engineNote = 'Chrome'; return await tt.translate(text); } catch (e) {}
+    }
+    try { engineNote = 'MyMemory'; return await myMemory(text, s, t); } catch (e) { return ''; }
+  }
+
+  // ---------- Deepgram ----------
+  class Stt {
+    constructor(id, lang, cb) {
+      this.id = id; this.lang = lang; this.cb = cb; this.acc = ''; this.ws = null; this.ctx = null; this.stream = null; this.buf = []; this.n = 0;
+    }
+    async start(stream, key) {
+      this.stream = stream;
+      const model = this.lang === 'en' ? 'nova-3' : 'nova-2';
+      const url = 'wss://api.deepgram.com/v1/listen?model=' + model + '&language=' + this.lang +
+        '&encoding=linear16&sample_rate=16000&channels=1&interim_results=true&endpointing=300&smart_format=true';
+      this.ws = new WebSocket(url, ['token', key]);
+      this.ws.binaryType = 'arraybuffer';
+      this.ws.onmessage = e => this.onMsg(e);
+      this.ws.onerror = () => this.cb.error('연결 오류 · 키를 확인해 주세요', 'Connection error. Check your key');
+      this.ws.onclose = ev => { if (this.ws && ev.code !== 1000 && !this.closing) this.cb.error('연결이 끊겼어요 (' + ev.code + ')', 'Disconnected (' + ev.code + ')'); };
+      this.ctx = new AudioContext({ sampleRate: 16000 });
+      const code = "class P extends AudioWorkletProcessor{process(i){const c=i[0][0];if(c)this.port.postMessage(c.slice(0));return true}}registerProcessor('pcm',P)";
+      await this.ctx.audioWorklet.addModule(URL.createObjectURL(new Blob([code], { type: 'application/javascript' })));
+      const src = this.ctx.createMediaStreamSource(stream);
+      const node = new AudioWorkletNode(this.ctx, 'pcm');
+      const mute = this.ctx.createGain(); mute.gain.value = 0;
+      src.connect(node); node.connect(mute); mute.connect(this.ctx.destination);
+      node.port.onmessage = e => this.push(e.data);
+    }
+    push(f32) {
+      this.buf.push(f32); this.n += f32.length;
+      if (this.n < 2048) return;
+      const all = new Float32Array(this.n); let o = 0;
+      for (const b of this.buf) { all.set(b, o); o += b.length; }
+      this.buf = []; this.n = 0;
+      if (!this.ws || this.ws.readyState !== 1) return;
+      const i16 = new Int16Array(all.length);
+      for (let i = 0; i < all.length; i++) { const v = Math.max(-1, Math.min(1, all[i])); i16[i] = v < 0 ? v * 0x8000 : v * 0x7FFF; }
+      this.ws.send(i16.buffer);
+    }
+    onMsg(e) {
+      let d; try { d = JSON.parse(e.data); } catch { return; }
+      if (d.type !== 'Results') return;
+      const alt = d.channel && d.channel.alternatives && d.channel.alternatives[0];
+      const t = (alt && alt.transcript || '').trim();
+      if (d.is_final) {
+        if (t) this.acc = this.acc ? this.acc + ' ' + t : t;
+        if (this.acc && (d.speech_final || wc(this.acc) >= 14)) { const f = this.acc; this.acc = ''; this.cb.final(f); }
+        else this.cb.partial(this.acc);
+      } else {
+        this.cb.partial(this.acc ? this.acc + ' ' + t : t);
+      }
+    }
+    stop() {
+      this.closing = true;
+      try { if (this.acc) { const f = this.acc; this.acc = ''; this.cb.final(f); } } catch {}
+      try { if (this.ws && this.ws.readyState === 1) { this.ws.send(JSON.stringify({ type: 'CloseStream' })); this.ws.close(1000); } } catch {}
+      try { this.ctx && this.ctx.close(); } catch {}
+      try { this.stream && this.stream.getTracks().forEach(t => t.stop()); } catch {}
+    }
+  }
+
+  // ---------- 패널 ----------
+  const logArr = [];
+  class Panel {
+    constructor(listEl, who, getSrc, getTgt) {
+      this.list = listEl; this.who = who; this.getSrc = getSrc; this.getTgt = getTgt; this.live = null; this.token = 0; this.busy = false; this.lastLen = 0; this.cleared = false;
+    }
+    clearHint() { if (!this.cleared) { this.list.innerHTML = ''; this.cleared = true; } }
+    scroll() { this.list.scrollTop = this.list.scrollHeight; }
+    ensureLive() {
+      this.clearHint();
+      if (!this.live) {
+        const d = document.createElement('div'); d.className = 'e live';
+        d.innerHTML = '<div class="s"></div><div class="t"></div>';
+        this.list.appendChild(d); this.live = d;
+      }
+      return this.live;
+    }
+    async partial(text) {
+      if (!text) return;
+      const el = this.ensureLive();
+      el.querySelector('.s').textContent = hhmm() + ' · ' + text;
+      this.scroll();
+      const need = this.getSrc() === 'ko' ? text.replace(/\s/g, '').length >= 3 : wc(text) >= 2;
+      if (!need || this.busy) return;
+      this.busy = true; const tk = ++this.token;
+      const out = await tr(text, this.getSrc(), this.getTgt());
+      this.busy = false;
+      if (tk === this.token && this.live && out) { this.live.querySelector('.t').textContent = out + ' …'; this.scroll(); }
+    }
+    async final(text) {
+      if (!text) return;
+      const el = this.ensureLive();
+      this.live = null; this.token++;
+      el.className = 'e';
+      el.querySelector('.s').textContent = hhmm() + ' · ' + text;
+      const tEl = el.querySelector('.t');
+      if (!tEl.textContent) tEl.textContent = '…';
+      this.scroll();
+      const out = await tr(text, this.getSrc(), this.getTgt());
+      tEl.textContent = out || '(번역 실패 · translation failed)';
+      this.scroll();
+      logArr.push({ time: hhmm(), who: this.who, src: text, out: out });
+      remember(this.who, text);
+    }
+  }
+  const recent = [];
+  function remember(who, text) { recent.push({ who, text, at: Date.now() }); while (recent.length > 12) recent.shift(); }
+  function overlap(a, b) {
+    const A = new Set(a.toLowerCase().split(/\W+/).filter(Boolean)), B = b.toLowerCase().split(/\W+/).filter(Boolean);
+    if (!B.length) return 0; let m = 0; for (const w of B) if (A.has(w)) m++; return m / B.length;
+  }
+
+  const peerLang = () => $('#peerLang').value;
+  const peerPanel = new Panel($('#peerList'), '상대 Them', peerLang, () => 'ko');
+  const mePanel = new Panel($('#meList'), '나 Me', () => 'ko', peerLang);
+
+  // ---------- 시작 / 끝 ----------
+  let stts = [];
+  let running = false;
+
+  async function start() {
+    const key = LS.get('dg_key') || $('#key').value.trim();
+    if (!key) { setStatus('먼저 Deepgram 키를 넣고 저장해 주세요', 'Enter and save your Deepgram key first'); return; }
+    LS.set('dg_key', key);
+    // 번역 모델 미리 준비 (클릭 직후에만 내려받기 가능)
+    getTr(peerLang(), 'ko'); getTr('ko', peerLang());
+    setStatus('소리 연결 중…', 'Connecting audio…');
+    let tab = null, mic = null;
+    try {
+      const ds = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+      ds.getVideoTracks().forEach(t => t.stop());
+      if (ds.getAudioTracks().length) tab = new MediaStream(ds.getAudioTracks());
+      else setStatus('탭 소리를 공유하지 않았어요. 공유 창에서 "탭 오디오 공유"를 켜세요', 'No tab audio shared. Tick "Also share tab audio"');
+    } catch (e) { /* 취소 */ }
+    if ($('#useMic').checked) {
+      try { mic = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }); }
+      catch (e) { setStatus('마이크를 허용하지 않았어요', 'Microphone not allowed'); }
+    }
+    if (!tab && !mic) { setStatus('연결할 소리가 없어요', 'No audio source to listen to'); return; }
+
+    stts = [];
+    if (tab) {
+      const s = new Stt(0, peerLang(), {
+        partial: t => peerPanel.partial(t),
+        final: t => peerPanel.final(t),
+        error: (k, e) => { setStatus(k, e); $('#peerState').textContent = '오류 Error'; }
+      });
+      await s.start(tab, key); stts.push(s); $('#peerState').textContent = '듣는 중 Listening';
+    }
+    if (mic) {
+      const s = new Stt(1, 'ko', {
+        partial: t => { if (!echo(t)) mePanel.partial(t); },
+        final: t => { if (!echo(t)) mePanel.final(t); },
+        error: (k, e) => { setStatus(k, e); $('#meState').textContent = '오류 Error'; }
+      });
+      await s.start(mic, key); stts.push(s); $('#meState').textContent = '듣는 중 Listening';
+    }
+    running = true;
+    $('#start').classList.add('dis'); $('#stop').classList.remove('dis');
+    $('#peerLang').disabled = true;
+    setStatus('통역 중', 'Interpreting');
+  }
+  // 내 마이크가 스피커 소리를 다시 듣는 경우를 거른다 (한국어 상대 소리는 같은 단어가 겹침)
+  function echo(text) {
+    const now = Date.now();
+    for (const r of recent) if (r.who.startsWith('상대') && now - r.at < 4000 && overlap(r.text, text) > 0.6) return true;
+    return false;
+  }
+  function stop() {
+    stts.forEach(s => s.stop()); stts = []; running = false;
+    $('#start').classList.remove('dis'); $('#stop').classList.add('dis'); $('#peerLang').disabled = false;
+    $('#peerState').textContent = '대기 Idle'; $('#meState').textContent = '대기 Idle';
+    setStatus('멈췄어요', 'Stopped');
+  }
+  $('#start').onclick = () => start().catch(e => { setStatus('시작 실패: ' + e.message, 'Failed to start'); stop(); });
+  $('#stop').onclick = stop;
+
+  // ---------- 플로팅 창 ----------
+  $('#pipBtn').onclick = async () => {
+    if (!('documentPictureInPicture' in window)) { setStatus('크롬 116 이상에서 플로팅 창을 쓸 수 있어요', 'Floating window needs Chrome 116+'); return; }
+    try {
+      const w = await documentPictureInPicture.requestWindow({ width: 480, height: 560 });
+      for (const ss of document.styleSheets) {
+        try { const st = w.document.createElement('style'); st.textContent = [...ss.cssRules].map(r => r.cssText).join('\n'); w.document.head.append(st); }
+        catch (e) { if (ss.href) { const l = w.document.createElement('link'); l.rel = 'stylesheet'; l.href = ss.href; w.document.head.append(l); } }
+      }
+      w.document.body.className = 'pip';
+      w.document.body.style.height = '100%';
+      const panels = $('#panels');
+      w.document.body.append(panels);
+      w.addEventListener('pagehide', () => { $('#main').append(panels); });
+    } catch (e) { setStatus('플로팅 창을 열 수 없어요', 'Could not open floating window'); }
+  };
+
+  // ---------- 기록 저장 ----------
+  $('#save').onclick = () => {
+    if (!logArr.length) { setStatus('저장할 기록이 아직 없어요', 'Nothing to save yet'); return; }
+    const txt = logArr.map(l => '[' + l.time + '] ' + l.who + '\n' + l.src + '\n→ ' + l.out).join('\n\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([txt], { type: 'text/plain;charset=utf-8' }));
+    a.download = 'transbubble-' + new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-') + '.txt';
+    a.click();
+  };
+
+  window.addEventListener('beforeunload', () => { if (running) stop(); });
+})();
+</script>
+</body>
+</html>
