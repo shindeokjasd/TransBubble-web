@@ -6,56 +6,56 @@
 <title>번역버블 PC · TransBubble PC</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
-:root{--bg:#0D0D0E;--card:#1B1B1D;--field:#2A2A2D;--fg:#F5F5F7;--sub:#A8A8AE;--acc:#FF7A1A;--onacc:#1A0F08;--me:#9DB4FF;--fs:22px}
+:root{--bg:#F4F8FF;--card:#FFFFFF;--field:#EAF1FF;--line:#DCE7FA;--fg:#0F1B33;--sub:#5B6B86;--acc:#1D4ED8;--acc2:#2F6BFF;--soft:#E4EEFF;--good:#1F7A4D;--warn:#B45309;--fs:30px}
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
-body{background:var(--bg);color:var(--fg);font-family:'Pretendard Variable',Pretendard,system-ui,sans-serif;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
-body.pip{padding:8px}
+body{background:linear-gradient(180deg,#E4EEFF 0%,#F7FAFF 40%,#FFFFFF 100%);color:var(--fg);font-family:'Pretendard Variable',Pretendard,system-ui,sans-serif;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+body.pip{padding:8px;background:var(--card)}
 #app{display:flex;flex-direction:column;height:100%;max-width:1100px;margin:0 auto;padding:14px 16px 16px;gap:10px}
 header{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-h1{margin:0;font-size:22px;font-weight:800;line-height:1.15}
+h1{margin:0;font-size:22px;font-weight:800;line-height:1.15;color:var(--acc)}
 h1 small{display:block;font-size:11px;font-weight:500;color:var(--sub)}
 .sp{flex:1}
 button,select,input{font-family:inherit;font-size:13px}
-button{border:0;border-radius:12px;padding:9px 14px;background:var(--field);color:var(--fg);cursor:pointer;line-height:1.15;min-height:42px}
+button{border:0;border-radius:14px;padding:9px 14px;background:var(--soft);color:var(--acc);font-weight:700;cursor:pointer;line-height:1.15;min-height:42px}
 button small,label small{display:block;font-size:10px;color:var(--sub);font-weight:400}
-button.pri{background:var(--acc);color:var(--onacc);font-weight:700}
-button.pri small{color:var(--onacc)}
-button.stop{background:#FF6B6B;color:#1A0B0B;font-weight:700}
-button.stop small{color:#1A0B0B}
+button.pri{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff}
+button.pri small{color:#DCE7FF}
+button.stop{background:#FDE8E8;color:#B42318}
+button.stop small{color:#B42318}
 button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 select,input[type=password],input[type=text]{background:var(--field);color:var(--fg);border:0;border-radius:10px;padding:10px 12px;min-height:42px}
 #bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 #status{font-size:12px;color:var(--sub);line-height:1.35}
-#keybox{background:var(--card);border-radius:16px;padding:14px 16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#keybox{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 #keybox p{margin:0;font-size:12px;color:var(--sub);flex-basis:100%;line-height:1.5}
 #panels{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px}
-.panel{flex:1;min-height:0;background:var(--card);border-radius:18px;padding:12px 16px;display:flex;flex-direction:column;border:1px solid transparent}
-.panel.peer{border-color:#7A3B12}
-.panel.me{border-color:#3A4466}
-.ph{display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:6px}
-.peer .ph b{color:var(--acc)}
-.me .ph b{color:var(--me)}
-.ph span{color:var(--sub);font-weight:400}
-.list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
-.e .s{font-size:12px;color:var(--sub);line-height:1.4}
-.e .t{font-size:var(--fs);line-height:1.4;font-weight:500}
-.e.live .t{color:#FFC9A0}
-.me .e.live .t{color:#D3DDFF}
-.hint{color:var(--sub);font-size:13px;line-height:1.5}
+.panel{flex:1;min-height:0;border-radius:18px;padding:12px 16px;display:flex;flex-direction:column}
+.panel.peer{background:var(--soft)}
+.panel.me{background:var(--card);border:1px solid var(--line)}
+.ph{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:700;margin-bottom:8px;gap:8px}
+.peer .ph b{color:var(--good)}
+.me .ph b{color:var(--acc)}
+.ph span{color:var(--sub);font-weight:400;font-size:11px}
+.list{flex:1;overflow-y:auto}
+.cur .s{font-size:calc(var(--fs)*.6);color:var(--sub);line-height:1.4;word-break:keep-all;overflow-wrap:anywhere}
+.cur .t{font-size:var(--fs);line-height:1.35;font-weight:500;color:var(--fg);margin-top:4px;word-break:keep-all;overflow-wrap:anywhere}
+.cur.live .t{color:var(--acc)}
+.hint{color:var(--sub);font-size:14px;line-height:1.5}
 .dis{display:none}
 a{color:var(--acc)}
+@media (max-width:600px){#app{padding:10px 12px 12px}:root{--fs:24px}button{padding:8px 10px}}
 </style>
 </head>
 <body>
 <div id="app">
   <header>
-    <h1>번역버블 PC<small>TransBubble PC · v1</small></h1>
+    <h1>번역버블 PC<small>TransBubble PC · v2</small></h1>
     <span class="sp"></span>
     <div id="status">준비됨<br><small>Ready</small></div>
   </header>
 
-  <div id="mobileWarn" class="dis" style="background:#2B2214;border-radius:14px;padding:12px 14px;font-size:12px;line-height:1.5;color:#EBD9B4">이 화면은 PC 크롬에서만 탭 소리를 가져올 수 있어요. 폰 크롬에서는 마이크만 써요.<br><span style="color:#B9A685;font-size:10px">Tab audio capture works on desktop Chrome only. On phones only the mic works.</span></div>
+  <div id="mobileWarn" class="dis" style="background:#FFF4E5;border-radius:14px;padding:12px 14px;font-size:12px;line-height:1.5;color:#7A4A0B">이 화면은 PC 크롬에서만 탭 소리를 가져올 수 있어요. 폰 크롬에서는 마이크만 써요.<br><span style="color:#9A6B2C;font-size:10px">Tab audio capture works on desktop Chrome only. On phones only the mic works.</span></div>
   <div id="keybox">
     <label for="key" style="font-size:13px;font-weight:700">음성 인식 키 <small>Deepgram API key</small></label>
     <input id="key" type="password" placeholder="Deepgram API key" autocomplete="off" style="flex:1;min-width:220px">
@@ -79,12 +79,12 @@ a{color:var(--acc)}
   <div id="main" style="flex:1;min-height:0;display:flex">
     <div id="panels" style="flex:1">
       <section class="panel peer" aria-label="상대 Them">
-        <div class="ph"><b>▲ 상대 <span>Them · 탭 소리 Tab audio</span></b><span id="peerState">대기 Idle</span></div>
-        <div class="list" id="peerList"><div class="hint">줌·구글밋 탭을 공유하면 상대 말이 여기에 영어와 한국어로 나와요.<br>Share your Zoom / Meet tab and the other person's speech appears here with Korean below.</div></div>
+        <div class="ph"><b>▲ 상대 · <span id="peerDir" style="color:inherit;font-size:inherit;font-weight:inherit">English → 한국어</span> <span>· 탭 소리 Tab audio</span></b><span id="peerState">대기 Idle</span></div>
+        <div class="list" id="peerList"><div class="hint">상대가 영어로 말하면 영어, 그 아래 한국어가 떠요.<br>Share your Zoom / Meet tab: their English, then Korean below.</div></div>
       </section>
       <section class="panel me" aria-label="나 Me">
-        <div class="ph"><b>▼ 나 <span>Me · 마이크 Mic · 한국어</span></b><span id="meState">대기 Idle</span></div>
-        <div class="list" id="meList"><div class="hint">내가 한국어로 말하면 영어 번역이 아래에 나와요. 이어폰을 쓰면 가장 정확해요.<br>Speak Korean and the English translation appears below. Headphones work best.</div></div>
+        <div class="ph"><b>▼ 나 · <span id="meDir" style="color:inherit;font-size:inherit;font-weight:inherit">한국어 → English</span> <span>· 마이크 Mic</span></b><span id="meState">대기 Idle</span></div>
+        <div class="list" id="meList"><div class="hint">내가 한국어로 말하면 한국어, 그 아래 영어가 떠요. 이어폰을 쓰면 가장 정확해요.<br>My Korean, then English below. Headphones work best.</div></div>
       </section>
     </div>
   </div>
@@ -106,10 +106,10 @@ a{color:var(--acc)}
   $('#key').value = LS.get('dg_key');
   $('#saveKey').onclick = () => { LS.set('dg_key', $('#key').value.trim()); setStatus('저장했어요', 'Saved'); };
 
-  let fs = +LS.get('fs', '22');
-  const applyFs = () => { document.documentElement.style.setProperty('--fs', fs + 'px'); LS.set('fs', fs); };
+  let fs = +LS.get('fs2', window.innerWidth < 600 ? '24' : '30');
+  const applyFs = () => { document.documentElement.style.setProperty('--fs', fs + 'px'); LS.set('fs2', fs); };
   applyFs();
-  $('#fPlus').onclick = () => { fs = Math.min(48, fs + 3); applyFs(); };
+  $('#fPlus').onclick = () => { fs = Math.min(64, fs + 3); applyFs(); };
   $('#fMinus').onclick = () => { fs = Math.max(14, fs - 3); applyFs(); };
 
   // ---------- 번역 ----------
@@ -202,45 +202,57 @@ a{color:var(--acc)}
 
   // ---------- 패널 ----------
   const logArr = [];
+  // 칸마다 가장 최근 문장 하나만: 원문(작게) 그 아래 번역(크게). 새 문장이 시작되면 이전 문장을 바꾼다.
   class Panel {
     constructor(listEl, who, getSrc, getTgt) {
-      this.list = listEl; this.who = who; this.getSrc = getSrc; this.getTgt = getTgt; this.live = null; this.token = 0; this.busy = false; this.lastLen = 0; this.cleared = false;
+      this.list = listEl; this.who = who; this.getSrc = getSrc; this.getTgt = getTgt;
+      this.cur = null; this.liveOn = false; this.seq = 0; this.want = null; this.running = false; this.cleared = false;
     }
     clearHint() { if (!this.cleared) { this.list.innerHTML = ''; this.cleared = true; } }
-    scroll() { this.list.scrollTop = this.list.scrollHeight; }
-    ensureLive() {
+    el() {
       this.clearHint();
-      if (!this.live) {
-        const d = document.createElement('div'); d.className = 'e live';
+      if (!this.cur) {
+        const d = document.createElement('div'); d.className = 'cur';
         d.innerHTML = '<div class="s"></div><div class="t"></div>';
-        this.list.appendChild(d); this.live = d;
+        this.list.appendChild(d); this.cur = d;
       }
-      return this.live;
+      return this.cur;
     }
-    async partial(text) {
+    begin() { // 새 문장 시작: 이전 문장의 번역을 지운다
+      if (!this.liveOn) { this.liveOn = true; this.seq++; this.el().querySelector('.t').textContent = ''; }
+    }
+    partial(text) {
       if (!text) return;
-      const el = this.ensureLive();
-      el.querySelector('.s').textContent = hhmm() + ' · ' + text;
-      this.scroll();
-      const need = this.getSrc() === 'ko' ? text.replace(/\s/g, '').length >= 3 : wc(text) >= 2;
-      if (!need || this.busy) return;
-      this.busy = true; const tk = ++this.token;
-      const out = await tr(text, this.getSrc(), this.getTgt());
-      this.busy = false;
-      if (tk === this.token && this.live && out) { this.live.querySelector('.t').textContent = out + ' …'; this.scroll(); }
+      this.begin();
+      const el = this.el();
+      el.classList.add('live');
+      el.querySelector('.s').textContent = text;
+      this.want = { text, seq: this.seq };
+      this.pump();
+    }
+    async pump() { // 번역 중에 글이 더 늘면, 끝난 뒤 가장 최근 글로 다시 번역
+      if (this.running) return;
+      this.running = true;
+      try {
+        while (this.want) {
+          const w = this.want; this.want = null;
+          const out = await tr(w.text, this.getSrc(), this.getTgt());
+          if (out && this.liveOn && w.seq === this.seq) this.cur.querySelector('.t').textContent = out + ' …';
+        }
+      } finally { this.running = false; }
     }
     async final(text) {
       if (!text) return;
-      const el = this.ensureLive();
-      this.live = null; this.token++;
-      el.className = 'e';
-      el.querySelector('.s').textContent = hhmm() + ' · ' + text;
+      this.begin();
+      const seq = this.seq;
+      this.liveOn = false; this.want = null;
+      const el = this.el();
+      el.classList.remove('live');
+      el.querySelector('.s').textContent = text;
       const tEl = el.querySelector('.t');
-      if (!tEl.textContent) tEl.textContent = '…';
-      this.scroll();
+      tEl.textContent = tEl.textContent ? tEl.textContent.replace(/ …$/, '') : '…';
       const out = await tr(text, this.getSrc(), this.getTgt());
-      tEl.textContent = out || '(번역 실패 · translation failed)';
-      this.scroll();
+      if (seq === this.seq) tEl.textContent = out || '(번역 실패 · translation failed)';
       logArr.push({ time: hhmm(), who: this.who, src: text, out: out });
       remember(this.who, text);
     }
@@ -255,6 +267,13 @@ a{color:var(--acc)}
   const peerLang = () => $('#peerLang').value;
   const peerPanel = new Panel($('#peerList'), '상대 Them', peerLang, () => 'ko');
   const mePanel = new Panel($('#meList'), '나 Me', () => 'ko', peerLang);
+  const dirs = () => {
+    const v = peerLang() === 'vi';
+    $('#peerDir').textContent = (v ? 'Tiếng Việt' : 'English') + ' → 한국어';
+    $('#meDir').textContent = '한국어 → ' + (v ? 'Tiếng Việt' : 'English');
+  };
+  $('#peerLang').addEventListener('change', dirs); dirs();
+  window.TB = { peerPanel, mePanel }; // 점검용
 
   // ---------- 시작 / 끝 ----------
   let stts = [];
