@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TransBubble Invite</title>
+<meta name="description" content="Join a live English ⇄ Korean call interpreter in two steps.">
+<style>
+  :root {
+    --bg: #f4f8ff; --card: #ffffff; --fg: #0f1b33; --sub: #5b6b86; --line: #dce7fa;
+    --accent: #1d4ed8; --accent2: #2f6bff; --on: #ffffff; --good: #15803d; --goodSoft: #eff8f2; --field: #eaf1ff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0b1220; --card: #121a2b; --fg: #eef2fa; --sub: #9aa8c2; --line: #233150;
+      --accent: #3b6cff; --accent2: #5b85ff; --on: #ffffff; --good: #4ade80; --goodSoft: #10241a; --field: #18233a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0b1220; --card: #121a2b; --fg: #eef2fa; --sub: #9aa8c2; --line: #233150;
+    --accent: #3b6cff; --accent2: #5b85ff; --on: #ffffff; --good: #4ade80; --goodSoft: #10241a; --field: #18233a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+  }
+  main { max-width: 480px; margin: 0 auto; padding: 28px 16px 40px; }
+  .brand { font-weight: 800; font-size: 26px; letter-spacing: -0.02em; }
+  .ko { color: var(--sub); font-size: 13px; }
+  .lead { margin: 6px 0 2px; font-size: 17px; }
+  .code {
+    margin: 18px 0 6px; padding: 14px 16px; border-radius: 16px; background: var(--field);
+    font-weight: 800; font-size: 28px; letter-spacing: 0.08em; text-align: center;
+  }
+  .step {
+    margin-top: 16px; padding: 18px; border-radius: 20px; background: var(--card);
+    border: 1px solid var(--line);
+  }
+  .step h2 { margin: 0; font-size: 19px; display: flex; gap: 10px; align-items: center; }
+  .num {
+    flex: none; width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: var(--on);
+    display: inline-flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  .step p { margin: 8px 0 0; color: var(--sub); font-size: 14px; }
+  .btn {
+    display: block; width: 100%; margin-top: 14px; padding: 16px; border: 0; border-radius: 14px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2)); color: var(--on);
+    font: inherit; font-weight: 800; font-size: 18px; text-align: center; text-decoration: none; cursor: pointer;
+  }
+  .btn.alt { background: var(--field); color: var(--accent); }
+  .ok { margin-top: 12px; padding: 12px 14px; border-radius: 14px; background: var(--goodSoft); color: var(--good); font-size: 14px; display: none; }
+  .warn { margin-top: 16px; padding: 16px; border-radius: 16px; background: var(--card); border: 1px solid var(--line); display: none; }
+  ol { margin: 8px 0 0; padding-left: 20px; color: var(--sub); font-size: 14px; }
+</style>
+</head>
+<body>
+<main>
+  <div class="brand">TransBubble</div>
+  <div class="lead">Live call interpreter · English ⇄ Korean subtitles</div>
+  <div class="ko">번역버블 초대 · 영어 ⇄ 한국어 실시간 자막</div>
+
+  <div id="bad" class="warn">
+    <b>This invite link is incomplete.</b><br>Ask your partner to send the link again.
+    <div class="ko">초대 링크가 잘렸어요. 다시 보내 달라고 해 주세요.</div>
+  </div>
+
+  <div id="ios" class="warn">
+    <b>TransBubble works on Android phones only.</b><br>
+    You can still talk normally — your partner will see the subtitles on their phone.
+    <div class="ko">번역버블은 안드로이드 전용이에요. 그냥 평소처럼 통화하시면 상대 폰에 자막이 떠요.</div>
+  </div>
+
+  <div id="flow">
+    <div class="code" id="code">····-····</div>
+    <div class="ko" style="text-align:center">Invite code · 초대 코드</div>
+
+    <section class="step">
+      <h2><span class="num">1</span>Install the app</h2>
+      <p>Skip this if you already have TransBubble.</p>
+      <ol>
+        <li>Tap the button, then download <b>TransBubble.apk</b></li>
+        <li>Open the file and allow <b>“Install unknown apps”</b></li>
+        <li>Tap <b>Install</b>, then come back here</li>
+      </ol>
+      <a class="btn alt" id="install" href="https://github.com/shindeokjasd/TransBubble/releases/latest">Download the app</a>
+      <div class="ko" style="margin-top:8px">앱이 이미 있으면 건너뛰세요.</div>
+    </section>
+
+    <section class="step">
+      <h2><span class="num">2</span>Connect</h2>
+      <p>Opens TransBubble and connects you automatically. No keys or settings to type.</p>
+      <button class="btn" id="connect" type="button">Connect</button>
+      <div class="ok" id="after">
+        Didn’t open? Open <b>TransBubble</b> yourself — the code is copied and fills in by itself. Then tap <b>Join</b>.
+      </div>
+      <div class="ko" style="margin-top:8px">누르면 앱이 열리고 자동으로 연결돼요.</div>
+    </section>
+  </div>
+</main>
+<script>
+(function () {
+  var APK = "https://github.com/shindeokjasd/TransBubble/releases/latest";
+  var raw = decodeURIComponent((location.hash || "").replace(/^#/, "")).toUpperCase().replace(/[^A-Z0-9]/g, "");
+  var ok = /^[A-Z2-9]{8}$/.test(raw);
+  var code = ok ? raw.slice(0, 4) + "-" + raw.slice(4) : "";
+  var ua = navigator.userAgent || "";
+  var isIOS = /iPhone|iPad|iPod/i.test(ua);
+  if (!ok) { document.getElementById("bad").style.display = "block"; document.getElementById("flow").style.display = "none"; return; }
+  // 카카오톡·라인 안의 브라우저는 앱을 열지 못하는 경우가 많아서, 바깥 브라우저(크롬)로 다시 연다
+  if (!isIOS && /KAKAOTALK/i.test(ua)) { location.href = "kakaotalk://web/openExternal?url=" + encodeURIComponent(location.href); }
+  else if (!isIOS && /\bLine\//.test(ua) && !/openExternalBrowser=1/.test(location.search)) {
+    location.replace(location.pathname + "?openExternalBrowser=1" + location.hash); return;
+  }
+  if (isIOS) { document.getElementById("ios").style.display = "block"; document.getElementById("flow").style.display = "none"; return; }
+  document.getElementById("code").textContent = code;
+
+  function copyCode() {
+    var text = "Invite code: " + code;
+    try { if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(text).catch(function () {}); } catch (e) {}
+    try {
+      var t = document.createElement("textarea"); t.value = text; t.style.position = "fixed"; t.style.opacity = "0";
+      document.body.appendChild(t); t.select(); document.execCommand("copy"); document.body.removeChild(t);
+    } catch (e) {}
+    return Promise.resolve();
+  }
+
+  // 앱이 있으면 앱을 열고, 없으면 설치 페이지로 (안드로이드 크롬의 intent 링크)
+  var intentUrl = "intent://join?c=" + raw + "#Intent;scheme=transbubble;package=com.personal.transbubble;" +
+    "S.browser_fallback_url=" + encodeURIComponent(APK) + ";end";
+  window.__tbIntent = intentUrl;
+
+  document.getElementById("connect").addEventListener("click", function () {
+    copyCode().then(function () {
+      document.getElementById("after").style.display = "block";
+      location.href = intentUrl;
+    });
+  });
+  document.getElementById("install").addEventListener("click", function () { copyCode(); });
+})();
+</script>
+</body>
+</html>
