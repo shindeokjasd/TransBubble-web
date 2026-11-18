@@ -79,11 +79,11 @@
       <h2><span class="num">1</span>Install the app</h2>
       <p>Skip this if you already have TransBubble.</p>
       <ol>
-        <li>Tap the button, then download <b>TransBubble.apk</b></li>
+        <li>Tap the button — <b>TransBubble.apk</b> downloads</li>
         <li>Open the file and allow <b>“Install unknown apps”</b></li>
         <li>Tap <b>Install</b>, then come back here</li>
       </ol>
-      <a class="btn alt" id="install" href="https://github.com/shindeokjasd/TransBubble/releases/latest">Download the app</a>
+      <a class="btn alt" id="install" href="https://github.com/shindeokjasd/TransBubble-web/releases/latest/download/TransBubble.apk">Download the app</a>
       <div class="ko" style="margin-top:8px">앱이 이미 있으면 건너뛰세요.</div>
     </section>
 
@@ -100,7 +100,7 @@
 </main>
 <script>
 (function () {
-  var APK = "https://github.com/shindeokjasd/TransBubble/releases/latest";
+  var APK = "https://github.com/shindeokjasd/TransBubble-web/releases/latest/download/TransBubble.apk";
   var raw = decodeURIComponent((location.hash || "").replace(/^#/, "")).toUpperCase().replace(/[^A-Z0-9]/g, "");
   var ok = /^[A-Z2-9]{8}$/.test(raw);
   var code = ok ? raw.slice(0, 4) + "-" + raw.slice(4) : "";
