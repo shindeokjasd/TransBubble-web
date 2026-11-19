@@ -71,6 +71,13 @@
     <div class="ko">번역버블은 안드로이드 전용이에요. 그냥 평소처럼 통화하시면 상대 폰에 자막이 떠요.</div>
   </div>
 
+  <div id="kakao" class="warn" style="display:none">
+    <b>Open this page in Chrome first.</b><br>KakaoTalk's built-in browser can't open the app.
+    <a class="btn" id="toChrome" href="#" style="margin-top:12px">Open in Chrome</a>
+    <div style="margin-top:8px">Didn't work? Tap <b>⋮</b> (top right) → <b>Open in other browser</b>.</div>
+    <div class="ko">카카오톡 안에서는 앱이 안 열려요. 위 버튼(또는 오른쪽 위 ⋮ → 다른 브라우저로 열기)으로 크롬에서 여세요.</div>
+  </div>
+
   <div id="flow">
     <div class="code" id="code">····-····</div>
     <div class="ko" style="text-align:center">Invite code · 초대 코드</div>
@@ -95,20 +102,34 @@
         Didn’t open? Open <b>TransBubble</b> yourself — the code is copied and fills in by itself. Then tap <b>Join</b>.
       </div>
       <div class="ko" style="margin-top:8px">누르면 앱이 열리고 자동으로 연결돼요.</div>
+      <div class="ko" style="margin-top:6px">⚠️ 초대를 <b>보낸 사람(내 폰)</b>은 누르지 마세요. 받은 상대 폰에서만 눌러요.<br>Only the person who <b>received</b> this invite should tap Connect.</div>
     </section>
   </div>
 </main>
 <script>
 (function () {
   var APK = "https://github.com/shindeokjasd/TransBubble-web/releases/latest/download/TransBubble.apk";
-  var raw = decodeURIComponent((location.hash || "").replace(/^#/, "")).toUpperCase().replace(/[^A-Z0-9]/g, "");
+  var q = (location.search.match(/[?&]c=([^&]+)/) || [])[1] || "";
+  var raw = decodeURIComponent((location.hash || "").replace(/^#/, "") || q).toUpperCase().replace(/[^A-Z0-9]/g, "");
   var ok = /^[A-Z2-9]{8}$/.test(raw);
   var code = ok ? raw.slice(0, 4) + "-" + raw.slice(4) : "";
   var ua = navigator.userAgent || "";
   var isIOS = /iPhone|iPad|iPod/i.test(ua);
   if (!ok) { document.getElementById("bad").style.display = "block"; document.getElementById("flow").style.display = "none"; return; }
   // 카카오톡·라인 안의 브라우저는 앱을 열지 못하는 경우가 많아서, 바깥 브라우저(크롬)로 다시 연다
-  if (!isIOS && /KAKAOTALK/i.test(ua)) { location.href = "kakaotalk://web/openExternal?url=" + encodeURIComponent(location.href); }
+  if (!isIOS && /KAKAOTALK/i.test(ua)) {
+    // 자동으로 크롬으로 넘기기 (막히는 폰이 있어서 버튼도 함께 보여 준다)
+    var plain = location.origin + location.pathname + "?c=" + raw;
+    document.getElementById("kakao").style.display = "block";
+    document.getElementById("toChrome").addEventListener("click", function (e) {
+      e.preventDefault();
+      location.href = "kakaotalk://web/openExternal?url=" + encodeURIComponent(plain);
+      setTimeout(function () {
+        location.href = "intent://" + location.host + location.pathname + "?c=" + raw + "#Intent;scheme=https;package=com.android.chrome;end";
+      }, 900);
+    });
+    try { location.href = "kakaotalk://web/openExternal?url=" + encodeURIComponent(plain); } catch (e) {}
+  }
   else if (!isIOS && /\bLine\//.test(ua) && !/openExternalBrowser=1/.test(location.search)) {
     location.replace(location.pathname + "?openExternalBrowser=1" + location.hash); return;
   }
